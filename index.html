@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="img/calculadora.png" type="image/x-icon">
+    <title>Calculadora Lógica</title>
+</head>
+<body>
+    <div id="app">
+        <div id="calc" class="calc">
+            <p id="resultado"></p>
+            <table>
+                <tr>
+                    <td> <button class="btn btn_diferente" onclick="limpar()">AC</button></td>
+                    <td> <button class="btn btn_diferente" onclick="back()">C</button></td>
+                    <td> <button class="btn btn_diferente" onclick="back()">&#9003;</button></td>
+                    <td> <button class="btn btn_diferente" onclick="insert('&#40;')">&#40;</button></td>
+                    <td> <button class="btn btn_diferente" onclick="insert('&#41;')">&#41;</button></td>
+                </tr>
+
+                <tr>
+                    <td><button class="btn" onclick="insert('A')">A</button>
+                    <td> <button class="btn" onclick="insert('B')">B</button></td>
+                    <td> <button class="btn" onclick="insert('C')">C</button></td>
+                    <td> <button class="btn" onclick="insert('D')">D</button></td>
+                    <td> <button class="btn btn_diferente" onclick="insert('∧')">∧</button></td>
+                </tr>
+
+                <tr>
+                    <td><button class="btn" onclick="insert('E')">E</button></td>
+                    <td> <button class="btn" onclick="insert('F')">F</button></td>
+                    <td> <button class="btn" onclick="insert('G')">G</button></td>
+                    <td> <button class="btn" onclick="insert('H')">H</button></td>
+                    <td><button class="btn btn_diferente" onclick="insert('∨')">∨</button></td>
+                </tr>
+
+                <tr>
+                    <td>  <button class="btn" onclick="insert('I')">I</button></td>
+                    <td><button class="btn" onclick="insert('J')">J</button></td>
+                    <td><button class="btn" onclick="insert('K')">K</button></td>
+                    <td><button class="btn" onclick="insert('L')">L</button></td>
+                    <td><button class="btn btn_diferente" onclick="insert('→')">→</button></td>
+                </tr>
+
+                <tr>
+                    <td> <button class="btn" onclick="insert('M')">M</button></td>
+                    <td>  <button class="btn" onclick="insert('N')">N</button></td>
+                    <td>  <button class="btn" onclick="insert('O')">O</button></td>
+                    <td>  <button class="btn" onclick="insert('P')">P</button></td>
+                    <td> <button class="btn btn_diferente" onclick="insert('¬')">¬</button></td>
+                </tr>
+
+                <tr>
+                    <td> <button class="btn" onclick="insert('Q')">Q</button>
+                    <td> <button class="btn" onclick="insert('R')">R</button></td>
+                    <td> <button class="btn" onclick="insert('S')">S</button></td>
+                    <td>  <button class="btn" onclick="insert('T')">T</button></td>
+                    <td>  <button class="btn btn_diferente" onclick="insert('↔')">↔</button></td>
+                </tr>
+
+                <tr>
+                    <td>  <button class="btn" onclick="insert('U')">U</button></td>
+                    <td><button class="btn" onclick="insert('V')">V</button></td>
+                    <td> <button class="btn" onclick="insert('W')">W</button></td>
+                    <td>   <button class="btn" onclick="insert('X')">X</button></td>
+                    <td>   <button class="btn" onclick="insert('Y')">Y</button></td>
+                </tr>
+
+                <tr>
+                    <td colspan="2">  <button class="btn" id="ultima_letra" onclick="insert('Z')" style="width: 120px;">Z</button></td>
+                    <td colspan="3">  <button class="btn btn_diferente" id="igual" onclick="resultado()" style="width: 180px;">=</button></td>
+                </tr>
+            </table>
+        </div>
+        <div class="label-container"></div>
+        <table id="tableContainer"></table>
+      </div>
+</body>
+</html>
