@@ -81,6 +81,145 @@ function eliminar() {
     document.getElementById("valores").value = nuevovalor;
 }
 
+// validação lexical
+
+function lexico() {
+    this.Scan = function (expressao) {
+        var x = this.LimparEspaco(expressao);
+        if (this.Parenteses(x)) {
+            if (this.Operadores(x)) {
+                if (this.Proposicoes(x)) {
+                    return x;
+                } else {
+                    alert("Não pode haver proposições juntas");
+                }
+            } else {
+                alert("Verifique os operadores");
+            }
+        } else {
+            alert("Verifique os parênteses");
+        }
+        return "Erro";
+    };
+
+    this.LimparEspaco = function (expressao) {
+        var aux = "";
+        for (var i = 0; i < expressao.length; i++) {
+            if (expressao.charAt(i) !== " ") {
+                aux += expressao.charAt(i);
+            }
+        }
+        return aux;
+    };
+
+    this.Parenteses = function (expressao) {
+        var pilha = new Pilha();
+        for (var i = 0; i < expressao.length; i++) {
+            if (expressao.charAt(i) === "(") {
+                pilha.Add(expressao.charAt(i)); // adicionou na pilha
+            } else if (expressao.charAt(i) === ")") {
+                if (pilha.Vazia()) {
+                    return false;
+                } else {
+                    pilha.Remover(); // verifica que nenhum parêntese está sobrando sozinho
+                }
+            }
+        }
+        return pilha.Vazia(); // Verifica se todos os parênteses foram fechados
+    };
+
+
+    this.limparParenteses = function (expressao) {
+        var aux = "";
+        for (var i = 0; i < expressao.length; i++) {
+            if (expressao.charAt(i) !== "(" && expressao.charAt(i) !== ")") {
+                aux += expressao.charAt(i);
+            }
+        }
+        return aux;
+    };
+
+    this.Operadores = function(expressao){
+        var e = this.limparParenteses(expressao);
+        if(this.Operador(e.charAt(0)) || this.Operador(e.charAt(e.length -1))) return false;
+        else {
+            var s = true;
+            for(var i=0; i < e.length-1;i++){
+                if (this.Operador(e.charAt(i)) && (this.Operador(e.charAt(i + 1)))) return false;
+            }
+            return s;
+        }
+    }
+
+    this.Proposicoes = function (expressao) {
+        var e = this.limparParenteses(expressao);
+        var s = true;
+        for (var i = 0; i < e.length - 1; i++) {
+            if (this.Proposicao(e.charAt(i)) && this.Proposicao(e.charAt(i + 1))) {
+                return false;
+            }
+        }
+        return s;
+    };
+
+    this.Operador = function (x) {
+        var s = false;
+        switch (x) {
+            case '↔':
+            case '¬':
+            case '→':
+            case '∧':
+            case '∨':
+                s = true;
+                break;
+        }
+        return s;
+    };
+
+    this.Proposicao = function (x) {
+        var s = false;
+        switch (x) {
+            case 'A':
+            case 'B':
+            case 'C':
+            case 'D':
+                s = true;
+                break;
+        }
+        return s;
+    };
+}
+
+// Definição da classe Pilha
+function Pilha() {
+    this.v = [];
+    this.tope = -1;
+
+    this.Vazia = function() {
+        return this.tope === -1;
+    };
+
+    this.Add = function(dado) {
+        this.v[++this.tope] = dado;
+    };
+
+    this.Remover = function() {
+        if (!this.Vazia()) {
+            this.tope--;
+        }
+    };
+}
+
+function resultado(){
+    const analisadorLexico = new lexico();
+    let expressao = document.getElementById("resultado").innerHTML;
+    const expressaoValidada = analisadorLexico.Scan(expressao);
+   
+    if (expressaoValidada === "Erro") {
+        return;
+    }
+
+}
 
 
 
