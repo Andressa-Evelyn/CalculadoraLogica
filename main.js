@@ -47,6 +47,8 @@ function readFromTokens(tokens) {
             const items = []
             while (tokens[0] != ')') {
                 items.push(tokens.shift())
+                if (!tokens.length)
+                    throw new SyntaxError("Não foi encontrado o ')'")
             }
             tokens.shift() // Remover o ')'
             stack.push(readFromTokens(items))
@@ -147,6 +149,7 @@ function genereteProposition(ast) {
                 throw SyntaxError('Invalido')
         }
     }
+    if (stack.length !== 1) throw new SyntaxError('Preposição invalida') 
     return stack[0]
 }
 
