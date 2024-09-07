@@ -109,22 +109,36 @@ class Not extends CompositionOperator {
 
 class And extends CompositionOperator {
     static SYMBOL = '∧'
+
+    evaluate(){
+        return this.left.evaluate() && this.right.evaluate();
+    }
 }
 
 class Or extends CompositionOperator {
     static SYMBOL = '∨'
+    
+    evaluate(){
+        return this.left.evaluate() || this.right.evaluate();
+    }
 }
 
 class Condition extends CompositionOperator {
     static SYMBOL = '→'
+
 }
 
 class BiCondition extends CompositionOperator {
     static SYMBOL = '↔'
+    
+    evaluate(){
+        return this.left.evaluate() === this.right.evaluate();
+    }
 }
 
 class Xor extends CompositionOperator {
     static SYMBOL = '⊻'
+
 }
 
 // Parser
