@@ -115,8 +115,27 @@ class Or extends CompositionOperator {
     static SYMBOL = '∨'
 }
 
+class Condition extends CompositionOperator {
+    static SYMBOL = '→'
+}
+
+class BiCondition extends CompositionOperator {
+    static SYMBOL = '↔'
+}
+
+class Xor extends CompositionOperator {
+    static SYMBOL = '⊻'
+}
+
 // Parser
-const allOperations = [Not.SYMBOL, And.SYMBOL, Or.SYMBOL]
+const allOperations = [
+    Not.SYMBOL,
+    And.SYMBOL,
+    Or.SYMBOL,
+    Condition.SYMBOL,
+    BiCondition.SYMBOL,
+    Xor.SYMBOL
+]
 
 function genereteProposition(ast) {
     if (!Array.isArray(ast))
@@ -144,7 +163,15 @@ function genereteProposition(ast) {
             case And.SYMBOL:
                 stack.push(new And(left, right))
                 continue
-            // TODO: implementar outros operadores
+            case Condition.SYMBOL:
+                stack.push(new Condition(left, right))
+                continue
+            case BiCondition.SYMBOL:
+                stack.push(new BiCondition(left, right))
+                continue
+            case Xor.SYMBOL:
+                stack.push(new Xor(left, right))
+                continue
             default:
                 throw SyntaxError('Invalido')
         }
@@ -366,16 +393,16 @@ function Pilha() {
     };
 }
 
-function resultado(){
-    const analisadorLexico = new lexico();
-    let expressao = document.getElementById("resultado").innerHTML;
-    const expressaoValidada = analisadorLexico.Scan(expressao);
+// function resultado(){
+//     const analisadorLexico = new lexico();
+//     let expressao = document.getElementById("resultado").value;
+//     const expressaoValidada = analisadorLexico.Scan(expressao);
    
-    if (expressaoValidada === "Erro") {
-        return;
-    }
+//     if (expressaoValidada === "Erro") {
+//         return;
+//     }
 
-}
+// }
 
 
 
