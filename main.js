@@ -126,6 +126,9 @@ class Or extends CompositionOperator {
 class Condition extends CompositionOperator {
     static SYMBOL = '→'
 
+    evaluate() {
+        return !this.left.evaluate() || this.right.evaluate();
+    }
 }
 
 class BiCondition extends CompositionOperator {
@@ -139,6 +142,8 @@ class BiCondition extends CompositionOperator {
 class Xor extends CompositionOperator {
     static SYMBOL = '⊻'
 
+    evaluate() {
+        return this.left.evaluate() != this.right.evaluate();
 }
 
 // Parser
