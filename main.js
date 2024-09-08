@@ -144,6 +144,7 @@ class Xor extends CompositionOperator {
 
     evaluate() {
         return this.left.evaluate() != this.right.evaluate();
+    }
 }
 
 // Parser
