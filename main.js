@@ -202,6 +202,8 @@ function resultado() {
         const item = genereteProposition(ast)
         console.log(item)
         console.log(item.evaluate())
+        const basicPrepositions = getBasicPrepositions(item)
+
         // TODO: criar tabela verdade
     } catch(err) {
         console.log(err)
@@ -419,4 +421,44 @@ function Pilha() {
 // }
 
 
+
+function getBasicPrepositions(proposition) {
+    if (proposition.value != undefined) return [proposition]
+    if (proposition instanceof Not) return [getBasicPrepositions(proposition.right)]
+    return [
+        ...getBasicPrepositions(proposition.left),
+        ...getBasicPrepositions(proposition.right)
+    ]
+}
+let formula = 'A∧(B→C)'
+const ast = parser(formula)
+const item = genereteProposition(ast)
+console.log(item)
+// console.log(item.evaluate())
+const basicPrepositions = getBasicPrepositions(item)
+
+const v = 3;
+let byte = 2**v-1; // inicia com todos os bits true
+
+function binaryLine(valueInt, len) {
+    let result = [];
+    for (let i = len-1; i != -1; i--) {
+        let bit = valueInt >> i;
+        bit = 1 & bit;
+        result.push(bit == 1)
+    }
+    console.log(result);
+    return result;
+}
+
+// for (let line = 0; line < 2**v; line++) {
+//     truthLine = binaryLine(byte, 3);
+
+//     // for (let j = 0; j < basicPrepositions.length; j++) {
+//     for (let j = 0; j < 3; j++) {
+//         basicPrepositions[j].value = truthLine[j];
+//     }
+//     console.log(basicPrepositions);
+//     byte--;
+// }
 
