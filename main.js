@@ -132,7 +132,7 @@ class BiCondition extends CompositionOperator {
     static SYMBOL = '↔'
     
     evaluate(){
-        return this.left.evaluate() === this.right.evaluate();
+        return (this.left.evaluate() === this.right.evaluate()) ? 1 : 0;
     }
 }
 
@@ -198,13 +198,10 @@ function resultado() {
     document.getElementById('error').innerText = ''
     const formula = document.getElementById('resultado').value
     try {
-        const ast = parser(formula)
-        const item = genereteProposition(ast)
-        console.log(item)
-        console.log(item.evaluate())
-        const basicPrepositions = getBasicPrepositions(item)
-
-        // TODO: criar tabela verdade
+        const ast = parser(formula);
+        const items = genereteProposition(ast);
+        const true_table = getTruthTable(items);
+        generateTable(true_table);
     } catch(err) {
         console.log(err)
         document.getElementById('error').innerText = err.message
@@ -409,18 +406,6 @@ function Pilha() {
     };
 }
 
-// function resultado(){
-//     const analisadorLexico = new lexico();
-//     let expressao = document.getElementById("resultado").value;
-//     const expressaoValidada = analisadorLexico.Scan(expressao);
-   
-//     if (expressaoValidada === "Erro") {
-//         return;
-//     }
-
-// }
-
-
 
 function getBasicPrepositions(proposition) {
     if (proposition.value != undefined) return [proposition]
@@ -430,35 +415,79 @@ function getBasicPrepositions(proposition) {
         ...getBasicPrepositions(proposition.right)
     ]
 }
-let formula = 'A∧(B→C)'
-const ast = parser(formula)
-const item = genereteProposition(ast)
-console.log(item)
-// console.log(item.evaluate())
-const basicPrepositions = getBasicPrepositions(item)
 
-const v = 3;
-let byte = 2**v-1; // inicia com todos os bits true
 
 function binaryLine(valueInt, len) {
     let result = [];
     for (let i = len-1; i != -1; i--) {
         let bit = valueInt >> i;
         bit = 1 & bit;
-        result.push(bit == 1)
+        result.push(bit)
     }
-    console.log(result);
     return result;
 }
 
-// for (let line = 0; line < 2**v; line++) {
-//     truthLine = binaryLine(byte, 3);
 
-//     // for (let j = 0; j < basicPrepositions.length; j++) {
-//     for (let j = 0; j < 3; j++) {
-//         basicPrepositions[j].value = truthLine[j];
-//     }
-//     console.log(basicPrepositions);
-//     byte--;
-// }
+function getTruthTable(items) {
 
+    const basicPrepositions = getBasicPrepositions(items);
+    let truthTable = [[]]
+    const n_of_lines = 2**basicPrepositions.length;
+    let byte = n_of_lines-1; // inicia com todos os bits true
+
+    // header
+    for (let p in basicPrepositions) {
+        truthTable[0].push(basicPrepositions[p].name);
+    }
+    truthTable[0].push("Resultado")
+    // values
+    for (let line = 1; line <= n_of_lines; line++) {
+        // Pega tabela verdade base
+        truthTable.push(binaryLine(byte, basicPrepositions.length));
+
+        // Preenche preposições com o valor atual
+        for (let j = 0; j < basicPrepositions.length; j++) {
+            basicPrepositions[j].value = truthTable[line][j]; 
+        }
+
+        // Recebe o resultado para o valor atual
+        truthTable[line].push(items.evaluate());
+        byte--;
+    }
+    return truthTable;
+}
+
+function generateTable(data) {
+
+    // Create a table element
+    const table = document.createElement('table');
+    table.classList.add('styled-table');
+
+    // Create table head
+    const thead = document.createElement('thead');
+    const headRow = document.createElement('tr');
+    data[0].forEach(text => {
+        const th = document.createElement('th');
+        th.textContent = text;
+        headRow.appendChild(th);
+    });
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+
+    // Create table body
+    const tbody = document.createElement('tbody');
+    data.slice(1).forEach(rowData => {
+        const row = document.createElement('tr');
+        rowData.forEach(cellData => {
+            const cell = document.createElement('td');
+            cell.textContent = cellData;
+            row.appendChild(cell);
+        });
+        tbody.appendChild(row);
+    });
+    table.appendChild(tbody);
+
+    // Append the table to the container
+    document.getElementById('result-table').innerHTML = '';  // Clear any previous tables
+    document.getElementById('result-table').appendChild(table);
+}
