@@ -109,7 +109,7 @@ class CompositionOperator {
 }
 
 class Not extends CompositionOperator {
-    static SYMBOL = '¬'
+    static SYMBOL = '~'
 
     constructor(right) {
         super(null, right)
