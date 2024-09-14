@@ -204,11 +204,10 @@ function resultado() {
     document.getElementById('error').innerText = ''
     const formula = document.getElementById('resultado').value
     try {
-        const ast = parser(formula)
-        const item = genereteProposition(ast)
-        console.log(item)
-        console.log(item.evaluate())
-        // TODO: criar tabela verdade
+        const ast = parser(formula);
+        const items = genereteProposition(ast);
+        const true_table = getTruthTable(items, formula);
+        generateTable(true_table);
     } catch(err) {
         console.log(err)
         document.getElementById('error').innerText = err.message
@@ -227,29 +226,6 @@ function limpar() {
 function back() {
     var resultado = document.getElementById('resultado').value;
     document.getElementById('resultado').value = resultado.substring(0, resultado.length - 1);
-}
-
-function valores() {
-    if (document.getElementById("valueOfA").selectedIndex == 1) {
-        variables[1] = "0";
-    } else {
-        variables[1] = "1";
-    }
-    if (document.getElementById("valueOfB").selectedIndex == 1) {
-        variables[3] = "0";
-    } else {
-        variables[3] = "1";
-    }
-    if (document.getElementById("valueOfC").selectedIndex == 1) {
-        variables[5] = "0";
-    } else {
-        variables[5] = "1";
-    }
-    if (document.getElementById("valueOfD").selectedIndex == 1) {
-        variables[7] = "0";
-    } else {
-        variables[7] = "1";
-    }
 }
 
 function switchValue(value) {
@@ -413,16 +389,88 @@ function Pilha() {
     };
 }
 
-// function resultado(){
-//     const analisadorLexico = new lexico();
-//     let expressao = document.getElementById("resultado").value;
-//     const expressaoValidada = analisadorLexico.Scan(expressao);
-   
-//     if (expressaoValidada === "Erro") {
-//         return;
-//     }
 
-// }
-
+function getBasicPrepositions(proposition) {
+    if (proposition.value != undefined) return [proposition]
+    if (proposition instanceof Not) return [getBasicPrepositions(proposition.right)]
+    return [
+        ...getBasicPrepositions(proposition.left),
+        ...getBasicPrepositions(proposition.right)
+    ]
+}
 
 
+function binaryLine(valueInt, len) {
+    let result = [];
+    for (let i = len-1; i != -1; i--) {
+        let bit = valueInt >> i;
+        bit = 1 & bit;
+        result.push(bit)
+    }
+    return result;
+}
+
+
+function getTruthTable(proposition, resultName) {
+
+    const basicPrepositions = getBasicPrepositions(proposition);
+    let truthTable = [[]]
+    const n_of_lines = 2**basicPrepositions.length;
+    let byte = n_of_lines-1; // inicia com todos os bits true
+
+    // header
+    for (let p in basicPrepositions) {
+        truthTable[0].push(basicPrepositions[p].name);
+    }
+    truthTable[0].push(resultName)
+    // values
+    for (let line = 1; line <= n_of_lines; line++) {
+        // Pega tabela verdade base
+        truthTable.push(binaryLine(byte, basicPrepositions.length));
+
+        // Preenche preposições com o valor atual
+        for (let j = 0; j < basicPrepositions.length; j++) {
+            basicPrepositions[j].value = truthTable[line][j]; 
+        }
+
+        // Recebe o resultado para o valor atual
+        truthTable[line].push(proposition.evaluate() ? 1 : 0);
+        byte--;
+    }
+    return truthTable;
+}
+
+function generateTable(data) {
+
+    // Create a table element
+    const table = document.createElement('table');
+    table.classList.add('styled-table');
+
+    // Create table head
+    const thead = document.createElement('thead');
+    const headRow = document.createElement('tr');
+    data[0].forEach(text => {
+        const th = document.createElement('th');
+        th.textContent = text;
+        headRow.appendChild(th);
+    });
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+
+    // Create table body
+    const tbody = document.createElement('tbody');
+    data.slice(1).forEach(rowData => {
+        const row = document.createElement('tr');
+        rowData.forEach(cellData => {
+            const cell = document.createElement('td');
+            cell.textContent = cellData;
+            row.appendChild(cell);
+        });
+        tbody.appendChild(row);
+    });
+    table.appendChild(tbody);
+
+    // Append the table to the container
+    document.getElementById('result-table').innerHTML = '';  // Clear any previous tables
+    document.getElementById('result-table').appendChild(table);
+}

@@ -70,3 +70,32 @@
     text-align: right;
     padding-right: 5px;
   }
+
+  #result-table {
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    min-width: 200px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+  }
+
+  #result-table thead tr {
+    background-color: #fab7be;
+    border-radius: 10px;
+    padding: 15px;
+  }
+
+  #result-table th,
+  #result-table td {
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1.2em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #f67280;
+    cursor: pointer;
+    transition: border-color 0.25s;
+    margin: 0.3rem 0.3rem;
+  }
