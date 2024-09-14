@@ -81,6 +81,10 @@ class Preposition {
     evaluate() {
         return this.value
     }
+
+    toString() {
+        return this.name
+    }
 }
 
 class CompositionOperator {
@@ -93,6 +97,15 @@ class CompositionOperator {
     evaluate() {
         return true
     }
+
+    stringfyItem(item) {
+        if (item.value) return item.toString()
+        return '(' + item.toString() + ')'
+    }
+
+    toString() {
+        return this.stringfyItem(this.left) + this.constructor.SYMBOL + this.stringfyItem(this.right)
+    }
 }
 
 class Not extends CompositionOperator {
@@ -104,6 +117,10 @@ class Not extends CompositionOperator {
 
     evaluate() {
         return !this.right.evaluate()
+    }
+
+    toString() {
+        return this.constructor.SYMBOL + this.stringfyItem(this.right)
     }
 }
 
@@ -206,7 +223,7 @@ function resultado() {
     try {
         const ast = parser(formula);
         const items = genereteProposition(ast);
-        const true_table = getTruthTable(items, formula);
+        const true_table = getTruthTable(items);
         generateTable(true_table);
     } catch(err) {
         console.log(err)
@@ -392,7 +409,7 @@ function Pilha() {
 
 function getBasicPrepositions(proposition) {
     if (proposition.value != undefined) return [proposition]
-    if (proposition instanceof Not) return [getBasicPrepositions(proposition.right)]
+    if (proposition instanceof Not) return [...getBasicPrepositions(proposition.right)]
     return [
         ...getBasicPrepositions(proposition.left),
         ...getBasicPrepositions(proposition.right)
@@ -411,30 +428,34 @@ function binaryLine(valueInt, len) {
 }
 
 
-function getTruthTable(proposition, resultName) {
-
-    const basicPrepositions = getBasicPrepositions(proposition);
+function getTruthTable(preposition) {
+    const basicPrepositions = getBasicPrepositions(preposition);
+    const basicPrepositionNames = Array.from(new Set(basicPrepositions.map((item) => item.name)))
     let truthTable = [[]]
-    const n_of_lines = 2**basicPrepositions.length;
+    const n_of_lines = 2**basicPrepositionNames.length;
     let byte = n_of_lines-1; // inicia com todos os bits true
 
     // header
-    for (let p in basicPrepositions) {
-        truthTable[0].push(basicPrepositions[p].name);
+    for (const name of basicPrepositionNames) {
+        truthTable[0].push(name);
     }
-    truthTable[0].push(resultName)
+    truthTable[0].push(preposition.toString())
     // values
     for (let line = 1; line <= n_of_lines; line++) {
         // Pega tabela verdade base
-        truthTable.push(binaryLine(byte, basicPrepositions.length));
+        truthTable.push(binaryLine(byte, basicPrepositionNames.length));
 
         // Preenche preposições com o valor atual
-        for (let j = 0; j < basicPrepositions.length; j++) {
-            basicPrepositions[j].value = truthTable[line][j]; 
+        for (let j = 0; j < basicPrepositionNames.length; j++) {
+            const name = basicPrepositionNames[j];
+            const prepositionsByName = basicPrepositions.filter((item) => item.name === name)
+            for (let currentPrepostion of prepositionsByName) {
+                currentPrepostion.value = truthTable[line][j];
+            }
         }
 
         // Recebe o resultado para o valor atual
-        truthTable[line].push(proposition.evaluate() ? 1 : 0);
+        truthTable[line].push(preposition.evaluate() ? 1 : 0);
         byte--;
     }
     return truthTable;
