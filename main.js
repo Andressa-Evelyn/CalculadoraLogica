@@ -173,8 +173,11 @@ const allOperations = [
     BiCondition.SYMBOL,
     Xor.SYMBOL
 ]
+const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
 
 function genereteProposition(ast) {
+    if (!Array.isArray(ast) && !letters.includes(ast))
+        throw SyntaxError('Preposição invalida')
     if (!Array.isArray(ast))
         return new Preposition(ast)
 
