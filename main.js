@@ -228,29 +228,6 @@ function back() {
     document.getElementById('resultado').value = resultado.substring(0, resultado.length - 1);
 }
 
-function valores() {
-    if (document.getElementById("valueOfA").selectedIndex == 1) {
-        variables[1] = "0";
-    } else {
-        variables[1] = "1";
-    }
-    if (document.getElementById("valueOfB").selectedIndex == 1) {
-        variables[3] = "0";
-    } else {
-        variables[3] = "1";
-    }
-    if (document.getElementById("valueOfC").selectedIndex == 1) {
-        variables[5] = "0";
-    } else {
-        variables[5] = "1";
-    }
-    if (document.getElementById("valueOfD").selectedIndex == 1) {
-        variables[7] = "0";
-    } else {
-        variables[7] = "1";
-    }
-}
-
 function switchValue(value) {
     var rdnbutton = document.getElementsByName("valor");
     var textFields = document.getElementsByName("value");
