@@ -135,7 +135,7 @@ class BiCondition extends CompositionOperator {
     static SYMBOL = '↔'
     
     evaluate(){
-        return (this.left.evaluate() === this.right.evaluate()) ? 1 : 0;
+        return this.left.evaluate() === this.right.evaluate();
     }
 }
 
@@ -206,7 +206,7 @@ function resultado() {
     try {
         const ast = parser(formula);
         const items = genereteProposition(ast);
-        const true_table = getTruthTable(items);
+        const true_table = getTruthTable(items, formula);
         generateTable(true_table);
     } catch(err) {
         console.log(err)
@@ -411,9 +411,9 @@ function binaryLine(valueInt, len) {
 }
 
 
-function getTruthTable(items) {
+function getTruthTable(proposition, resultName) {
 
-    const basicPrepositions = getBasicPrepositions(items);
+    const basicPrepositions = getBasicPrepositions(proposition);
     let truthTable = [[]]
     const n_of_lines = 2**basicPrepositions.length;
     let byte = n_of_lines-1; // inicia com todos os bits true
@@ -422,7 +422,7 @@ function getTruthTable(items) {
     for (let p in basicPrepositions) {
         truthTable[0].push(basicPrepositions[p].name);
     }
-    truthTable[0].push("Resultado")
+    truthTable[0].push(resultName)
     // values
     for (let line = 1; line <= n_of_lines; line++) {
         // Pega tabela verdade base
@@ -434,7 +434,7 @@ function getTruthTable(items) {
         }
 
         // Recebe o resultado para o valor atual
-        truthTable[line].push(items.evaluate());
+        truthTable[line].push(proposition.evaluate() ? 1 : 0);
         byte--;
     }
     return truthTable;
